@@ -14,7 +14,7 @@ const Login: React.FC<{}> = ({}) => {
     <Formik
       initialValues={{ username: '', password: '' }}
       onSubmit={async (values, actions) => {
-        let ok = await userServices.login(values);
+        let {ok} = await userServices.login(values);
         if (ok) {
           router.push("/");
         } else {

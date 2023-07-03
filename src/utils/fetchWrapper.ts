@@ -5,38 +5,39 @@ export const fetchWrapper = {
 };
 
 function get(url: string) {
-
+  const reqOptions = {
+    method: "GET",
+    headers: {...authHeader(url)},
+  } as any;
+  return fetch(url, reqOptions).then(handleRes);
 }
 
 function post(url: string, jsonData) {
   const reqOptions = {
     method: "POST",
-    // mode: "cors",
+    mode: "cors",
     headers: { "Content-Type": "application/json", ...authHeader(url) },
     body: JSON.stringify(jsonData), 
-  };
+  } as any;
   return fetch(url, reqOptions).then(handleRes);
 }
 
+// return auth header with auth token if user is logged in and request is to the api url
 function authHeader(url: string) {
-  // return auth header with auth token if user is logged in and request is to the api url
-  const user = JSON.parse(localStorage.getItem('user'))
-  const isLoggedIn = user && user.token;
-  const isApiUrl = url.startsWith("localhost");
-  if (isLoggedIn && isApiUrl) {
-    return { Authorization: `Bearer ${user.token}` };
+  const token = localStorage.getItem("authtoken");
+  const isApiUrl = true;  // url.startsWith("localhost");
+  if (token && isApiUrl) {
+    return { Authorization: `Bearer ${token}` };
   }
   return {};
 }
 
 async function handleRes(res: Response) {
-    if (res.status === 200) {
-      let resJson = await res.json();
-      console.log(resJson);
-      console.log(resJson.access_token);
-      return true;
-    } else {
-      console.log("bad res status code");
-    }
-  return false;
+  let ok = false;
+  if (res.status === 200) {    
+    ok = true;
+  } else {
+    console.log("bad res status code");
+  }
+  return {res, ok};
 }
