@@ -6,17 +6,19 @@ import { InputField } from "../components/InputField"
 import { useRouter } from "next/router"
 import NextLink from "next/link";
 
-function loginPOST(jsonData) {
+function loginPOST(jsonData, setErrors, router) {
   fetch('http://localhost:8080/users/login', {
     method: 'POST', 
     mode: 'cors', 
     body: JSON.stringify(jsonData) 
   }).then((res) => {
-    console.log(res);
-    console.log('login POST succeed!');
-  }).catch((err) => {
-    console.log(err)
-    console.log('login POST failed!');
+    if (res.status === 200) {
+      router.push("/");
+    } else {
+      setErrors({password: "Invalid username or password"});
+    }
+  }).catch(() => {
+    setErrors({password: "Error happens when login"});
   });
 }
 
@@ -26,11 +28,11 @@ const Login: React.FC<{}> = ({}) => {
     <Wrapper variant="small">
     <Formik
       initialValues={{ username: '', password: '' }}
-      onSubmit={async (values, {setErrors}) => {
-        loginPOST(values);
+      onSubmit={async (values, actions) => {
+        loginPOST(values, actions.setErrors, router);
       }}
     >
-      {({isSubmitting}) => (
+      {(props) => (
         <Form>
           <InputField
             name="username"
@@ -54,7 +56,7 @@ const Login: React.FC<{}> = ({}) => {
           <Button 
             mt={4} 
             type="submit" 
-            isLoading={isSubmitting} 
+            isLoading={props.isSubmitting} 
             colorScheme='teal'
           >
             LOGIN
