@@ -5,25 +5,7 @@ import { Wrapper } from "../components/Wrapper";
 import { InputField } from "../components/InputField"
 import { useRouter } from "next/router"
 import NextLink from "next/link";
-
-function loginPOST(jsonData, setErrors, router) {
-  fetch('http://localhost:8080/users/login', {
-    method: 'POST', 
-    mode: 'cors', 
-    body: JSON.stringify(jsonData) 
-  }).then(async (res) => {
-    if (res.status === 200) {
-      let resJson = await res.json();
-      console.log(resJson);
-      console.log(resJson.access_token);
-      router.push("/");
-    } else {
-      setErrors({password: "Invalid username or password"});
-    }
-  }).catch(() => {
-    setErrors({password: "Error happens when login"});
-  });
-}
+import { userServices } from "../utils/userServices";
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -32,7 +14,12 @@ const Login: React.FC<{}> = ({}) => {
     <Formik
       initialValues={{ username: '', password: '' }}
       onSubmit={async (values, actions) => {
-        loginPOST(values, actions.setErrors, router);
+        let ok = await userServices.login(values);
+        if (ok) {
+          router.push("/");
+        } else {
+          actions.setErrors({password: "Invalid username or password"});
+        }
       }}
     >
       {(props) => (
