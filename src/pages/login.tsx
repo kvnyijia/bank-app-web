@@ -11,8 +11,11 @@ function loginPOST(jsonData, setErrors, router) {
     method: 'POST', 
     mode: 'cors', 
     body: JSON.stringify(jsonData) 
-  }).then((res) => {
+  }).then(async (res) => {
     if (res.status === 200) {
+      let resJson = await res.json();
+      console.log(resJson);
+      console.log(resJson.access_token);
       router.push("/");
     } else {
       setErrors({password: "Invalid username or password"});
