@@ -1,9 +1,18 @@
 import { fetchWrapper } from "./fetchWrapper";
 
 export const userServices = {
+  createUser,
   login,
   getAccounts,
 };
+
+function createUser(jsonData) {
+  return fetchWrapper.post("http://localhost:8080/users", jsonData)
+    .then(async ({res, ok}) => {
+      let resJson = await res.json();
+      return {resJson, ok};
+    });
+}
 
 function login(jsonData) {
   return fetchWrapper.post("http://localhost:8080/users/login", jsonData)
