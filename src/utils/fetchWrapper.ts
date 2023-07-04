@@ -34,7 +34,7 @@ function authHeader(url: string) {
 
 async function handleRes(res: Response) {
   let ok = false;
-  if (res.status === 200) {    
+  if (res.ok) {    
     ok = true;
   } else {
     console.log("bad res status code");

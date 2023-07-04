@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { userServices } from '../utils/userServices';
+import { Layout } from '../components/Layout';
+import { userServices } from '../utils/userServices'
 
 const Index = () => {
   const [accounts, setAccounts] = useState(null);
   useEffect(() => {
-    userServices.getAccounts().then((accountsData) => {
-      setAccounts(accountsData);
+    userServices.getAccounts().then(({resJson, ok}) => {
+      if (ok) {
+        setAccounts(resJson);
+      }
     });
   }, []);
 
@@ -16,10 +18,9 @@ const Index = () => {
   }
 
   return (
-    <>
+    <Layout>
       <div>{body}</div>
-      <DarkModeSwitch/>
-    </>
+    </Layout>
   );
 };
 

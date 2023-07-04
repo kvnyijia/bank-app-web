@@ -12,6 +12,9 @@ function login(jsonData) {
       if (resJson.access_token) {
         localStorage.setItem("authtoken", resJson.access_token);
       }
+      if (resJson.user) {
+        localStorage.setItem("loginUser", JSON.stringify(resJson.user));
+      }
       return {resJson, ok};
     });
 }
@@ -20,7 +23,7 @@ function getAccounts() {
   return fetchWrapper.get("http://localhost:8080/accounts?page_id=1&page_size=5")
     .then(async ({res, ok}) => {
       let resJson = await res.json();
-      return resJson;
+      return {resJson, ok};
     });
 }
 
