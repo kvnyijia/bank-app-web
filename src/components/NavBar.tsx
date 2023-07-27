@@ -10,6 +10,10 @@ interface NavBarProps {
 
 interface loginUserProps {
   username: string;
+  full_name: string; 
+  email: string;
+  password_changed_at: string; 
+  created_at: string;
 }
 
 export const NavBar: React.FC<NavBarProps> = ({}) => {
@@ -20,7 +24,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     const loginUserItem = localStorage.getItem("loginUser");
     const jsonLoginUserItem = JSON.parse(loginUserItem);
     setLoginUser(jsonLoginUserItem);
-  });
+  }, []);
   
   if (!loginUser) {
     body = (
