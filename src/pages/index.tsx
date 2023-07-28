@@ -1,26 +1,33 @@
 import { useEffect, useState } from 'react';
-import { Layout } from '../components/Layout';
+import { NavBar } from '../components/NavBar';
+import { Wrapper } from '../components/Wrapper';
 import { userServices } from '../utils/userServices'
 
 const Index = () => {
   const [accounts, setAccounts] = useState(null);
   useEffect(() => {
-    userServices.getAccounts().then(({resJson, ok}) => {
-      if (ok) {
+    userServices.getAccounts().then(async ({resJson, ok, status}) => {
+      if (status === 200) {
         setAccounts(resJson);
+      } else {
+        console.log(status);
+        console.log(resJson);
       }
     });
   }, []);
 
-  let body: any = "helloooooooooo";
+  let body: any = "Login to see your bank accounts";
   if (accounts) {
     body = JSON.stringify(accounts);
   }
 
   return (
-    <Layout>
-      <div>{body}</div>
-    </Layout>
+    <>
+      <NavBar />
+      <Wrapper variant={"regular"}>
+        <div>{body}</div>
+      </Wrapper>
+    </>
   );
 };
 

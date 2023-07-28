@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { DarkModeSwitch } from "./DarkModeSwitch";
+import { userServices } from "../utils/userServices";
 
 interface NavBarProps {
 
@@ -26,16 +27,29 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     setLoginUser(jsonLoginUserItem);
   }, []);
   
-  if (!loginUser) {
+  const [authTokenIsValid, setAuthTokenIsValid] = useState(false);
+  useEffect(() => {
+    userServices.getAccounts().then(async ({resJson, ok, status}) => {
+      if (status === 200) {
+        setAuthTokenIsValid(true)
+      }
+    });
+  }, []);
+
+  if (!loginUser || !authTokenIsValid) {
     body = (
-      <>
-        <NextLink href="/login">
-          <Link color='white' mr={2}>LOGIN</Link>
-        </NextLink>
-        <NextLink href="/register">
-          <Link color='white'>REGISTER</Link>
-        </NextLink>
-      </>
+      <Flex align="center">
+        <Box mr={2}>
+          <NextLink href="/login">
+            LOGIN
+          </NextLink>
+        </Box>
+        <Box>
+          <NextLink href="/register">
+            REGISTER
+          </NextLink>
+        </Box>
+      </Flex>
     )
   } else {
     body = (
@@ -80,7 +94,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
           <Heading>Simple Bank</Heading>
         </NextLink>
         <Box ml={'auto'}>
-          {body} 
+          {body}
         </Box>
         <DarkModeSwitch/>
       </Flex>

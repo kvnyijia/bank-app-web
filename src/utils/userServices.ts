@@ -31,8 +31,9 @@ function login(jsonData) {
 function getAccounts() {
   return fetchWrapper.get("http://localhost:8080/accounts?page_id=1&page_size=5")
     .then(async ({res, ok}) => {
+      let status = res.status;
       let resJson = await res.json();
-      return {resJson, ok};
+      return {resJson, ok, status};
     });
 }
 
